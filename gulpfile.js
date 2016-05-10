@@ -3,6 +3,7 @@ var clean       = require('gulp-clean');
 var browserify  = require('browserify');
 var source      = require('vinyl-source-stream');
 var babelify    = require('babelify');
+var babel       = require('gulp-babel');
 var uglify      = require('gulp-uglify');
 var rename      = require('gulp-rename');
 var runSequence = require('run-sequence');
@@ -25,6 +26,12 @@ gulp.task('browserify', function() {
 	return bundler.bundle()
 	.pipe(source('nine-patch-phaser-plugin.js'))
 	.pipe(gulp.dest('./build'));
+});
+
+gulp.task('babel', function() {
+	return gulp.src('src/**')
+		.pipe(babel({presets:["es2015"]}))
+		.pipe(gulp.dest('build'));
 });
 
 gulp.task('browserify:debug', function() {
