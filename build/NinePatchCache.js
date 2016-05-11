@@ -177,3 +177,4 @@ var NinePatchCache = function () {
 }();
 
 exports.default = NinePatchCache;
+module.exports = exports['default'];

@@ -30,7 +30,7 @@ gulp.task('browserify', function() {
 
 gulp.task('babel', function() {
 	return gulp.src('src/**')
-		.pipe(babel({presets:["es2015"]}))
+		.pipe(babel({presets:["es2015"],plugins:["add-module-exports"]}))
 		.pipe(gulp.dest('build'));
 });
 

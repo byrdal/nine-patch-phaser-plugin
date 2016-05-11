@@ -115,3 +115,4 @@ var NinePatchImage = function (_Phaser$Image) {
 }(Phaser.Image);
 
 exports.default = NinePatchImage;
+module.exports = exports['default'];
