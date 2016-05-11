@@ -59,10 +59,14 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 
 	_createClass(NinePatchImage, [{
 		key: 'preUpdate',
-		value: function preUpdate() {}
+		value: function preUpdate() {
+			//Don't do anything
+		}
 	}, {
 		key: 'postUpdate',
-		value: function postUpdate() {}
+		value: function postUpdate() {
+			//Don't do anything
+		}
 	}, {
 		key: 'updateTransform',
 		value: function updateTransform() {

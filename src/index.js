@@ -9,8 +9,8 @@ var NinePatchCache = require('./NinePatchCache');
  * @param {Number} top        - REF NinePatchCache
  * @param {Number} bottom     - REF NinePatchCache
  */
-Phaser.Cache.prototype.addNinePatch = function addNinePatch(name, imageKey, imageFrame, left, right, top, bottom){
-	var _ninePatches = this._ninePatches = this._ninePatches || {};
+Phaser.Cache.prototype.addNinePatch = function (name, imageKey, imageFrame, left, right, top, bottom){
+	var _ninePatches = this._cacheMap.ninePatches = this._cacheMap.ninePatches || {};
 
 	if (_ninePatches[name]) {
 		//Already added to the cache
@@ -20,8 +20,18 @@ Phaser.Cache.prototype.addNinePatch = function addNinePatch(name, imageKey, imag
 	_ninePatches[name] = new NinePatchCache(this.game, imageKey, imageFrame, left, right, top, bottom);
 }
 /** Return an instance of NinePatchCache match with the name */
-Phaser.Cache.prototype.getNinePatch = function getNinePatch(name) {
-	var _ninePatches = this._ninePatches = this._ninePatches || {};
+Phaser.Cache.prototype.getNinePatch = function (name) {
+	var _ninePatches = this._cacheMap.ninePatches = this._cacheMap.ninePatches || {};
 	return _ninePatches[name];
 }
+
+/**
+ * Remove the patch from the cache
+ * @param name
+ */
+Phaser.Cache.prototype.removeNinePatch = function (name) {
+	var _ninePatches = this._cacheMap.ninePatches = this._cacheMap.ninePatches || {};
+	delete _ninePatches[name];
+}
+
 Phaser.NinePatchImage = require('./NinePatchImage');
