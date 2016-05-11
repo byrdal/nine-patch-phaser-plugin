@@ -10,6 +10,7 @@
   "publishConfig": {
     "registry": "http://registry.filamentgames.com"
   },
+  "typings": "./typings.d.ts",
   "keywords": [
     "phaser",
     "plugin",
