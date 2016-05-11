@@ -6,24 +6,29 @@ function isString(value){
 	return typeof value === 'string';
 }
 
-export default class NinePatchImage extends Phaser.Image {
+export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 	/**
 	 * @param {Phaser.Game} game - REF Phaser.Image params
-	 * @param {Number} x = 0 - REF Phaser.Image params
-	 * @param {Number} y = 0 - REF Phaser.Image params
+	 * @param {Number} x  - REF Phaser.Image params
+	 * @param {Number} y  - REF Phaser.Image params
 	 * @param  {String || NinePatchCache} key - The NinePatchCache used by the NinePatchImage. It can be a string which is a reference to the Cache entry, or an instance of a NinePatchCache.
-	 * @param {NinePatchCache} ninePatchImages - To be deprecated.
 	 */
-	constructor(game, x = 0, y = 0, key, ninePatchImages) {
-		super(game, x, y, PIXI.Texture.emptyTexture);
+	constructor(game, x, y, key, frame) {
+		super();
+		this.anchor = new PIXI.Point();
+		this.preUpdateCore = Phaser.Component.Core.preUpdate;
+
+		Phaser.Component.Core.init.call(this, game, x, y);
+
 		/** Get the NinePatchCache instance */
-		if (!ninePatchImages) {
-			if (typeof key == 'string') {
-				ninePatchImages = game.cache.getNinePatch(key);
-			} else if (true /** Check if key is an instance of NinePatchCache */) {
-				ninePatchImages = key;
-			} else throw new Error('NinePatchImage key must be a String or an instance of NinePatchCache');
-		}
+		var ninePatchImages;
+
+		if (typeof key == 'string') {
+			ninePatchImages = game.cache.getNinePatch(key);
+		} else if (true /** Check if key is an instance of NinePatchCache */) {
+			ninePatchImages = key;
+		} else throw new Error('NinePatchImage key must be a String or an instance of NinePatchCache');
+
 		this.ninePatchImages = ninePatchImages;
 		/** @type {Array} Generate 9 instances of Phaser.Image as the children of this */
 		this.images = ninePatchImages.CreateImages(this);
@@ -48,6 +53,18 @@ export default class NinePatchImage extends Phaser.Image {
 		this.currentHeight = value;
 		this.UpdateImageSizes();
 	}
+
+	preUpdate() {
+		return this.preUpdateCore.call(this);
+	}
+
+	updateTransform(parent) {
+		var scale = new PIXI.Point(this.scale.x, this.scale.y);
+		this.scale.set(1, 1);
+		super.updateTransform(parent);
+
+	}
+
 	/** Update images' positions to match the new measures */
 	UpdateImageSizes() {
 		var {ninePatchImages, currentWidth, currentHeight, images, anchor} = this;
@@ -69,3 +86,13 @@ export default class NinePatchImage extends Phaser.Image {
 		}
 	}
 }
+
+Phaser.Component.Core.install.call(NinePatchImage.prototype, [
+	'Bounds',
+	'BringToTop',
+	'Destroy',
+	'InputEnabled',
+	'Delta',
+	'Overlap',
+	'Reset'
+]);

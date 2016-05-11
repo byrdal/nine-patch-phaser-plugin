@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -20,36 +22,35 @@ function isString(value) {
 	return typeof value === 'string';
 }
 
-var NinePatchImage = function (_Phaser$Image) {
-	_inherits(NinePatchImage, _Phaser$Image);
+var NinePatchImage = function (_PIXI$DisplayObjectCo) {
+	_inherits(NinePatchImage, _PIXI$DisplayObjectCo);
 
 	/**
   * @param {Phaser.Game} game - REF Phaser.Image params
-  * @param {Number} x = 0 - REF Phaser.Image params
-  * @param {Number} y = 0 - REF Phaser.Image params
+  * @param {Number} x  - REF Phaser.Image params
+  * @param {Number} y  - REF Phaser.Image params
   * @param  {String || NinePatchCache} key - The NinePatchCache used by the NinePatchImage. It can be a string which is a reference to the Cache entry, or an instance of a NinePatchCache.
-  * @param {NinePatchCache} ninePatchImages - To be deprecated.
   */
 
-	function NinePatchImage(game) {
-		var x = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-		var y = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-		var key = arguments[3];
-		var ninePatchImages = arguments[4];
-
+	function NinePatchImage(game, x, y, key) {
 		_classCallCheck(this, NinePatchImage);
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NinePatchImage).call(this, game, x, y, PIXI.Texture.emptyTexture));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NinePatchImage).call(this));
 
-		game.add.existing(_this);
+		_this.anchor = new PIXI.Point();
+		_this.preUpdateCore = Phaser.Component.Core.preUpdate;
+
+		Phaser.Component.Core.init.call(_this, game, x, y);
+
 		/** Get the NinePatchCache instance */
-		if (!ninePatchImages) {
-			if (typeof key == 'string') {
-				ninePatchImages = game.cache.getNinePatch(key);
-			} else if (true /** Check if key is an instance of NinePatchCache */) {
-					ninePatchImages = key;
-				} else throw new Error('NinePatchImage key must be a String or an instance of NinePatchCache');
-		}
+		var ninePatchImages;
+
+		if (typeof key == 'string') {
+			ninePatchImages = game.cache.getNinePatch(key);
+		} else if (true /** Check if key is an instance of NinePatchCache */) {
+				ninePatchImages = key;
+			} else throw new Error('NinePatchImage key must be a String or an instance of NinePatchCache');
+
 		_this.ninePatchImages = ninePatchImages;
 		/** @type {Array} Generate 9 instances of Phaser.Image as the children of this */
 		_this.images = ninePatchImages.CreateImages(_this);
@@ -64,9 +65,22 @@ var NinePatchImage = function (_Phaser$Image) {
 
 
 	_createClass(NinePatchImage, [{
-		key: 'UpdateImageSizes',
+		key: 'preUpdate',
+		value: function preUpdate() {
+			return this.preUpdateCore.call(this);
+		}
+	}, {
+		key: 'updateTransform',
+		value: function updateTransform(parent) {
+			var scale = new PIXI.Point(this.scale.x, this.scale.y);
+			this.scale.set(1, 1);
+			_get(Object.getPrototypeOf(NinePatchImage.prototype), 'updateTransform', this).call(this, parent);
+		}
 
 		/** Update images' positions to match the new measures */
+
+	}, {
+		key: 'UpdateImageSizes',
 		value: function UpdateImageSizes() {
 			var ninePatchImages = this.ninePatchImages;
 			var currentWidth = this.currentWidth;
@@ -112,7 +126,10 @@ var NinePatchImage = function (_Phaser$Image) {
 	}]);
 
 	return NinePatchImage;
-}(Phaser.Image);
+}(PIXI.DisplayObjectContainer);
 
 exports.default = NinePatchImage;
+
+
+Phaser.Component.Core.install.call(NinePatchImage.prototype, ['Bounds', 'BringToTop', 'Destroy', 'InputEnabled', 'Delta', 'Overlap', 'Reset']);
 module.exports = exports['default'];

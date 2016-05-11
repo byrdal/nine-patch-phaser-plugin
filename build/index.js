@@ -13,8 +13,13 @@ var NinePatchCache = require('./NinePatchCache');
  */
 Phaser.Cache.prototype.addNinePatch = function addNinePatch(name, imageKey, imageFrame, left, right, top, bottom) {
   var _ninePatches = this._ninePatches = this._ninePatches || {};
+
+  if (_ninePatches[name]) {
+    //Already added to the cache
+    return;
+  }
+
   _ninePatches[name] = new NinePatchCache(this.game, imageKey, imageFrame, left, right, top, bottom);
-  console.log(_ninePatches);
 };
 /** Return an instance of NinePatchCache match with the name */
 Phaser.Cache.prototype.getNinePatch = function getNinePatch(name) {
