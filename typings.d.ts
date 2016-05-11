@@ -1,7 +1,3 @@
-declare module "nine-patch-phaser-plugin" {
-
-}
-
 declare module Phaser {
 	class NinePatchImage extends Phaser.Image {
 		constructor(game:Phaser.Game, x:number, y:number, key:string|NinePatchCache, frame:string|number);
