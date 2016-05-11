@@ -33,46 +33,58 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 		/** @type {Array} Generate 9 instances of Phaser.Image as the children of this */
 		this.images = ninePatchImages.CreateImages(this);
 		/** Setting measures for this */
-		this.currentWidth  = ninePatchImages.width;
-		this.currentHeight = ninePatchImages.height;
-		/** Update images' positions */
-		this.UpdateImageSizes();
-	}
-	/** Get/Set for measures to update images' positions on chagnges */
-	get targetWidth() {
-		return this.currentWidth;
-	}
-	get targetHeight() {
-		return this.currentHeight;
-	}
-	set targetWidth(value) {
-		this.currentWidth = value;
-		this.UpdateImageSizes();
-	}
-	set targetHeight(value) {
-		this.currentHeight = value;
-		this.UpdateImageSizes();
+		this.originalWidth  = ninePatchImages.width;
+		this.originalHeight = ninePatchImages.height;
 	}
 
 	preUpdate() {
 		return this.preUpdateCore.call(this);
 	}
 
-	updateTransform(parent) {
-		var scale = new PIXI.Point(this.scale.x, this.scale.y);
-		this.scale.set(1, 1);
-		super.updateTransform(parent);
+	updateTransform() {
+		if (!this.visible)
+		{
+			return;
+		}
 
+		var origScaleX = this.scale.x;
+		var origScaleY = this.scale.y;
+		this.scale.set(1,1);
+		this.displayObjectUpdateTransform();
+		this.scale.set(origScaleX, origScaleY);
+
+		if (this._cacheAsBitmap)
+		{
+			return;
+		}
+
+		this.UpdateImageSizes();
+
+		for (var i = 0; i < this.children.length; i++)
+		{
+			this.children[i].updateTransform();
+		}
 	}
 
 	/** Update images' positions to match the new measures */
 	UpdateImageSizes() {
-		var {ninePatchImages, currentWidth, currentHeight, images, anchor} = this;
+		var {ninePatchImages, originalWidth, originalHeight, images, anchor} = this;
 		/** Get the positions for the new measures */
-		var dimensions = ninePatchImages.CreateDimensionMap(currentWidth, currentHeight);
+		var newWidth = originalWidth * this.scale.x;
+		var newHeight = originalHeight * this.scale.y;
+
+		if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
+			//No need to recalc
+			return;
+		}
+
+		this.currentWidth = newWidth;
+		this.currentWidth = newHeight;
+
+		var dimensions = ninePatchImages.CreateDimensionMap(newWidth, newHeight);
 		/** Calculate the padding to match the anchor */
-		var paddingX = anchor.x * currentWidth;
-		var paddingY = anchor.y * currentHeight;
+		var paddingX = anchor.x * newWidth;
+		var paddingY = anchor.y * newHeight;
 		/** Loop through all images and update the positions */
 		for (let i = 0; i < 3; i++) {
 			for (let j = 0; j < 3; j++) {

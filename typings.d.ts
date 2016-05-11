@@ -36,14 +36,14 @@ declare module Phaser {
 		public z: number;
 		protected worldTransform:PIXI.Matrix;
 
-		public bringToTop: () => FlashMovieClip;
+		public bringToTop: () => NinePatchImage;
 		public checkTransform: (wt: PIXI.Matrix) => void;
 		public destroy: (destroyChildren?: boolean) => void;
-		public moveUp: () => FlashMovieClip;
-		public moveDown: () => FlashMovieClip;
+		public moveUp: () => NinePatchImage;
+		public moveDown: () => NinePatchImage;
 		public overlap: (displayObject: Phaser.Sprite | Phaser.Image | Phaser.TileSprite | Phaser.Button | PIXI.DisplayObject) => boolean;
 		public reset: (x: number, y: number, health?: number) => Phaser.Sprite;
-		public sendToBack: () => FlashMovieClip;
+		public sendToBack: () => NinePatchImage;
 	}
 
 	interface NinePatchCache {

@@ -6,8 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -32,7 +30,7 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
   * @param  {String || NinePatchCache} key - The NinePatchCache used by the NinePatchImage. It can be a string which is a reference to the Cache entry, or an instance of a NinePatchCache.
   */
 
-	function NinePatchImage(game, x, y, key) {
+	function NinePatchImage(game, x, y, key, frame) {
 		_classCallCheck(this, NinePatchImage);
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NinePatchImage).call(this));
@@ -55,14 +53,10 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 		/** @type {Array} Generate 9 instances of Phaser.Image as the children of this */
 		_this.images = ninePatchImages.CreateImages(_this);
 		/** Setting measures for this */
-		_this.currentWidth = ninePatchImages.width;
-		_this.currentHeight = ninePatchImages.height;
-		/** Update images' positions */
-		_this.UpdateImageSizes();
+		_this.originalWidth = ninePatchImages.width;
+		_this.originalHeight = ninePatchImages.height;
 		return _this;
 	}
-	/** Get/Set for measures to update images' positions on chagnges */
-
 
 	_createClass(NinePatchImage, [{
 		key: 'preUpdate',
@@ -71,10 +65,26 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 		}
 	}, {
 		key: 'updateTransform',
-		value: function updateTransform(parent) {
-			var scale = new PIXI.Point(this.scale.x, this.scale.y);
+		value: function updateTransform() {
+			if (!this.visible) {
+				return;
+			}
+
+			var origScaleX = this.scale.x;
+			var origScaleY = this.scale.y;
 			this.scale.set(1, 1);
-			_get(Object.getPrototypeOf(NinePatchImage.prototype), 'updateTransform', this).call(this, parent);
+			this.displayObjectUpdateTransform();
+			this.scale.set(origScaleX, origScaleY);
+
+			if (this._cacheAsBitmap) {
+				return;
+			}
+
+			this.UpdateImageSizes();
+
+			for (var i = 0; i < this.children.length; i++) {
+				this.children[i].updateTransform();
+			}
 		}
 
 		/** Update images' positions to match the new measures */
@@ -83,16 +93,27 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 		key: 'UpdateImageSizes',
 		value: function UpdateImageSizes() {
 			var ninePatchImages = this.ninePatchImages;
-			var currentWidth = this.currentWidth;
-			var currentHeight = this.currentHeight;
+			var originalWidth = this.originalWidth;
+			var originalHeight = this.originalHeight;
 			var images = this.images;
 			var anchor = this.anchor;
 			/** Get the positions for the new measures */
 
-			var dimensions = ninePatchImages.CreateDimensionMap(currentWidth, currentHeight);
+			var newWidth = originalWidth * this.scale.x;
+			var newHeight = originalHeight * this.scale.y;
+
+			if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
+				//No need to recalc
+				return;
+			}
+
+			this.currentWidth = newWidth;
+			this.currentWidth = newHeight;
+
+			var dimensions = ninePatchImages.CreateDimensionMap(newWidth, newHeight);
 			/** Calculate the padding to match the anchor */
-			var paddingX = anchor.x * currentWidth;
-			var paddingY = anchor.y * currentHeight;
+			var paddingX = anchor.x * newWidth;
+			var paddingY = anchor.y * newHeight;
 			/** Loop through all images and update the positions */
 			for (var i = 0; i < 3; i++) {
 				for (var j = 0; j < 3; j++) {
@@ -104,24 +125,6 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 					image.height = dimension.height;
 				}
 			}
-		}
-	}, {
-		key: 'targetWidth',
-		get: function get() {
-			return this.currentWidth;
-		},
-		set: function set(value) {
-			this.currentWidth = value;
-			this.UpdateImageSizes();
-		}
-	}, {
-		key: 'targetHeight',
-		get: function get() {
-			return this.currentHeight;
-		},
-		set: function set(value) {
-			this.currentHeight = value;
-			this.UpdateImageSizes();
 		}
 	}]);
 
