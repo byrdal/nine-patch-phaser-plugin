@@ -16,7 +16,6 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 	constructor(game, x, y, key, frame) {
 		super();
 		this.anchor = new PIXI.Point();
-		this.preUpdateCore = Phaser.Component.Core.preUpdate;
 
 		Phaser.Component.Core.init.call(this, game, x, y);
 
@@ -38,7 +37,11 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 	}
 
 	preUpdate() {
-		return this.preUpdateCore.call(this);
+		//Don't do anything
+	}
+
+	postUpdate() {
+		//Don't do anything
 	}
 
 	updateTransform() {

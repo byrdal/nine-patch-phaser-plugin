@@ -36,7 +36,6 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NinePatchImage).call(this));
 
 		_this.anchor = new PIXI.Point();
-		_this.preUpdateCore = Phaser.Component.Core.preUpdate;
 
 		Phaser.Component.Core.init.call(_this, game, x, y);
 
@@ -60,9 +59,10 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 
 	_createClass(NinePatchImage, [{
 		key: 'preUpdate',
-		value: function preUpdate() {
-			return this.preUpdateCore.call(this);
-		}
+		value: function preUpdate() {}
+	}, {
+		key: 'postUpdate',
+		value: function postUpdate() {}
 	}, {
 		key: 'updateTransform',
 		value: function updateTransform() {
@@ -70,6 +70,7 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 				return;
 			}
 
+			//Backout global scale because we are going to implement our own scaling behavior
 			var origScaleX = this.scale.x;
 			var origScaleY = this.scale.y;
 			this.scale.set(1 / this.parent.worldScale.x, 1 / this.parent.worldScale.y);
@@ -104,7 +105,6 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 
 			if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
 				//No need to recalc
-				console.log("cached");
 				return;
 			}
 

@@ -119,7 +119,7 @@ export default class NinePatchCache {
 	/**  */
 	/**
 	 * Generate patch images
-	 * @param {DisplayObject}[Optional] Either a Phaser.Group or a Phaser.Image/Sprite/... that would contain these images
+	 * @param {DisplayObject}
 	 * @return {Array} 3x3 Array of Phaser.Image for the patches
 	 */
 	CreateImages(parent) {
@@ -129,13 +129,9 @@ export default class NinePatchCache {
 		for (let i = 0; i < 3; i++) {
 			for (let j = 0; j < 3; j++) {
 				/** @type {Phaser.Image} The generated image */
-				let image = images[i][j] = this.game.add.image(0, 0, textures[i][j]);
+				let image = images[i][j] = new PIXI.Sprite(textures[i][j]);
 				/** Add the image to parent */
-				if (parent) {
-					/** TODO: Write an isFunction check */
-					if (parent.add) parent.add(image);
-					else if (parent.addChild) parent.addChild(image);
-				}
+				parent.addChild(image);
 			}
 		}
 		return images;
