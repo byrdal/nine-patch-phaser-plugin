@@ -1,6 +1,6 @@
 {
   "name": "nine-patch-phaser-plugin",
-  "version": "1.0.0",
+  "version": "1.0.0-filament",
   "description": "A Nine Patch Plugin for Phaser",
   "main": "build/index.js",
   "scripts": {
