@@ -19,6 +19,19 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 
 		Phaser.Component.Core.init.call(this, game, x, y);
 
+		this.loadTexture(key, frame);
+	}
+
+	preUpdate() {
+		Phaser.Component.Core.preUpdate.call(this);
+	}
+
+	postUpdate() {
+		//Don't do anything
+	}
+
+	
+	loadTexture(key, frame) {
 		/** Get the NinePatchCache instance */
 		var ninePatchImages;
 
@@ -29,19 +42,18 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 		} else throw new Error('NinePatchImage key must be a String or an instance of NinePatchCache');
 
 		this.ninePatchImages = ninePatchImages;
-		/** @type {Array} Generate 9 instances of Phaser.Image as the children of this */
-		this.images = ninePatchImages.CreateImages(this);
+
+		if(!this.images) {
+			/** @type {Array} Generate 9 instances of Phaser.Image as the children of this */
+			this.images = ninePatchImages.CreateImages(this);
+		} else {
+			//If we already have images, update their textures
+			ninePatchImages.UpdateImages(this);
+		}
+
 		/** Setting measures for this */
 		this.originalWidth  = ninePatchImages.width;
 		this.originalHeight = ninePatchImages.height;
-	}
-
-	preUpdate() {
-		//Don't do anything
-	}
-
-	postUpdate() {
-		//Don't do anything
 	}
 
 	updateTransform() {

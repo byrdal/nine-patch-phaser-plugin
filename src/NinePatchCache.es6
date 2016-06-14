@@ -136,4 +136,17 @@ export default class NinePatchCache {
 		}
 		return images;
 	}
+
+	UpdateImages(parent) {
+		var textures = this.textures;
+		var k = 0;
+
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 3; j++) {
+				let image = parent.children[k];
+				image.texture = textures[i][j];
+				k++;
+			}
+		}
+	}
 }

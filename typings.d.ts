@@ -44,6 +44,7 @@ declare module Phaser {
 		public overlap: (displayObject: Phaser.Sprite | Phaser.Image | Phaser.TileSprite | Phaser.Button | PIXI.DisplayObject) => boolean;
 		public reset: (x: number, y: number, health?: number) => Phaser.Sprite;
 		public sendToBack: () => NinePatchImage;
+		public loadTexture: (key:string|NinePatchCache, frame:string|number) => void;
 	}
 
 	interface NinePatchCache {
