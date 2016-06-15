@@ -36,7 +36,7 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 		var ninePatchImages;
 
 		if (typeof key == 'string') {
-			ninePatchImages = game.cache.getNinePatch(key);
+			ninePatchImages = this.game.cache.getNinePatch(key);
 		} else if (true /** Check if key is an instance of NinePatchCache */) {
 			ninePatchImages = key;
 		} else throw new Error('NinePatchImage key must be a String or an instance of NinePatchCache');
