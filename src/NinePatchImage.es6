@@ -65,7 +65,9 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 		//Backout global scale because we are going to implement our own scaling behavior
 		var origScaleX = this.scale.x;
 		var origScaleY = this.scale.y;
-		this.scale.set(1 / this.parent.worldScale.x, 1 / this.parent.worldScale.y);
+		//Workaround changes in Phaser 2.5.0 to how worldScale is calculated
+		var pwt = this.parent.worldTransform;
+		this.scale.set(1 / Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b), 1 / Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d));
 		this.displayObjectUpdateTransform();
 		this.scale.set(origScaleX, origScaleY);
 
@@ -86,8 +88,10 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 	UpdateImageSizes() {
 		var {ninePatchImages, originalWidth, originalHeight, images, anchor} = this;
 		/** Get the positions for the new measures */
-		var newWidth = originalWidth * this.parent.worldScale.x * this.scale.x;
-		var newHeight = originalHeight * this.parent.worldScale.y * this.scale.y;
+		//Workaround changes in Phaser 2.5.0 to how worldScale is calculated
+		var pwt = this.parent.worldTransform;
+		var newWidth = originalWidth * Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b) * this.scale.x;
+		var newHeight = originalHeight * Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d) * this.scale.y;
 
 		if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
 			//No need to recalc

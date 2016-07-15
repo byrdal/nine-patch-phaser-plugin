@@ -89,7 +89,8 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 			//Backout global scale because we are going to implement our own scaling behavior
 			var origScaleX = this.scale.x;
 			var origScaleY = this.scale.y;
-			this.scale.set(1 / this.parent.worldScale.x, 1 / this.parent.worldScale.y);
+			var pwt = this.parent.worldTransform;
+			this.scale.set(1 / Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b), 1 / Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d));
 			this.displayObjectUpdateTransform();
 			this.scale.set(origScaleX, origScaleY);
 
@@ -116,8 +117,10 @@ var NinePatchImage = function (_PIXI$DisplayObjectCo) {
 			var anchor = this.anchor;
 			/** Get the positions for the new measures */
 
-			var newWidth = originalWidth * this.parent.worldScale.x * this.scale.x;
-			var newHeight = originalHeight * this.parent.worldScale.y * this.scale.y;
+			var wt = this.worldTransform;
+			var pwt = this.parent.worldTransform;
+			var newWidth = originalWidth * Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b) * this.scale.x;
+			var newHeight = originalHeight * Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d) * this.scale.y;
 
 			if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
 				//No need to recalc
