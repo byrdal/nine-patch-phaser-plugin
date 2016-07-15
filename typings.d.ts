@@ -34,7 +34,7 @@ declare module Phaser {
 		public x: number;
 		public y: number;
 		public z: number;
-		protected worldTransform:PIXI.Matrix;
+		public worldTransform:PIXI.Matrix;
 
 		public bringToTop: () => NinePatchImage;
 		public checkTransform: (wt: PIXI.Matrix) => void;
