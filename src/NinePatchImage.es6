@@ -20,6 +20,7 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 		Phaser.Component.Core.init.call(this, game, x, y);
 
 		this.loadTexture(key, frame);
+		this.UpdateImageSizes();
 	}
 
 	preUpdate() {
@@ -86,20 +87,17 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 
 	/** Update images' positions to match the new measures */
 	UpdateImageSizes() {
-		var {ninePatchImages, originalWidth, originalHeight, images, anchor} = this;
+		var {ninePatchImages, images, anchor} = this;
 		/** Get the positions for the new measures */
-		//Workaround changes in Phaser 2.5.0 to how worldScale is calculated
-		var pwt = this.parent.worldTransform;
-		var newWidth = originalWidth * Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b) * this.scale.x;
-		var newHeight = originalHeight * Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d) * this.scale.y;
-
-		if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
-			//No need to recalc
-			return;
+		var parentScaleX = 1;
+		var parentScaleY = 1;
+		if (this.parent) {
+			var pwt = this.parent.worldTransform;
+			parentScaleX = Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b);
+			parentScaleY = Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d);
 		}
-
-		this.currentWidth = newWidth;
-		this.currentHeight = newHeight;
+		var newWidth = this._width * parentScaleX * this.scale.x;
+		var newHeight = this._height * parentScaleY * this.scale.y;
 
 		var dimensions = ninePatchImages.CreateDimensionMap(newWidth, newHeight);
 		/** Calculate the padding to match the anchor */
