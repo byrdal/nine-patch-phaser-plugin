@@ -233,6 +233,7 @@ var NinePatchImage = (function (_PIXI$DisplayObjectContainer) {
 		Phaser.Component.Core.init.call(this, game, x, y);
 
 		this.loadTexture(key, frame);
+		this.UpdateImageSizes();
 	}
 
 	_createClass(NinePatchImage, [{
@@ -268,8 +269,8 @@ var NinePatchImage = (function (_PIXI$DisplayObjectContainer) {
 			}
 
 			/** Setting measures for this */
-			this.originalWidth = ninePatchImages.width;
-			this.originalHeight = ninePatchImages.height;
+			this._width = ninePatchImages.width;
+			this._height = ninePatchImages.height;
 		}
 	}, {
 		key: 'updateTransform',
@@ -281,7 +282,9 @@ var NinePatchImage = (function (_PIXI$DisplayObjectContainer) {
 			//Backout global scale because we are going to implement our own scaling behavior
 			var origScaleX = this.scale.x;
 			var origScaleY = this.scale.y;
-			this.scale.set(1 / this.parent.worldScale.x, 1 / this.parent.worldScale.y);
+			//Workaround changes in Phaser 2.5.0 to how worldScale is calculated
+			var pwt = this.parent.worldTransform;
+			this.scale.set(1 / Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b), 1 / Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d));
 			this.displayObjectUpdateTransform();
 			this.scale.set(origScaleX, origScaleY);
 
@@ -301,22 +304,19 @@ var NinePatchImage = (function (_PIXI$DisplayObjectContainer) {
 		key: 'UpdateImageSizes',
 		value: function UpdateImageSizes() {
 			var ninePatchImages = this.ninePatchImages;
-			var originalWidth = this.originalWidth;
-			var originalHeight = this.originalHeight;
 			var images = this.images;
 			var anchor = this.anchor;
 
 			/** Get the positions for the new measures */
-			var newWidth = originalWidth * this.parent.worldScale.x * this.scale.x;
-			var newHeight = originalHeight * this.parent.worldScale.y * this.scale.y;
-
-			if (newWidth == this.currentWidth && newHeight == this.currentHeight) {
-				//No need to recalc
-				return;
+			var parentScaleX = 1;
+			var parentScaleY = 1;
+			if (this.parent) {
+				var pwt = this.parent.worldTransform;
+				parentScaleX = Math.sqrt(pwt.a * pwt.a + pwt.b * pwt.b);
+				parentScaleY = Math.sqrt(pwt.c * pwt.c + pwt.d * pwt.d);
 			}
-
-			this.currentWidth = newWidth;
-			this.currentHeight = newHeight;
+			var newWidth = this._width * parentScaleX * this.scale.x;
+			var newHeight = this._height * parentScaleY * this.scale.y;
 
 			var dimensions = ninePatchImages.CreateDimensionMap(newWidth, newHeight);
 			/** Calculate the padding to match the anchor */
@@ -342,6 +342,28 @@ var NinePatchImage = (function (_PIXI$DisplayObjectContainer) {
 exports['default'] = NinePatchImage;
 
 Phaser.Component.Core.install.call(NinePatchImage.prototype, ['Bounds', 'BringToTop', 'Destroy', 'InputEnabled', 'Delta', 'Overlap', 'Reset']);
+
+Object.defineProperty(NinePatchImage.prototype, 'width', {
+	get: function get() {
+		return this._width;
+	},
+
+	set: function set(value) {
+		this._width = value;
+		this.UpdateImageSizes();
+	}
+});
+
+Object.defineProperty(NinePatchImage.prototype, 'height', {
+	get: function get() {
+		return this._height;
+	},
+
+	set: function set(value) {
+		this._height = value;
+		this.UpdateImageSizes();
+	}
+});
 module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
