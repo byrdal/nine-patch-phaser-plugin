@@ -1,11 +1,11 @@
 {
   "name": "nine-patch-phaser-plugin",
-  "version": "1.0.0-filament5",
+  "version": "1.0.0",
   "authors": [
     "Nguyen Tuan Anh <anhnt.fami@gmail.com>"
   ],
   "description": "A Nine Patch Plugin for Phaser",
-  "main": "build/nine-patch-phaser-plugin.min.js",
+  "main": "build/nine-patch-phaser-plugin.js",
   "moduleType": [
     "es6",
     "globals",
@@ -23,7 +23,6 @@
     "9-patch"
   ],
   "license": "MIT",
-  "homepage": "http://anhnt.ninja",
   "ignore": [
     "node_modules",
     "bower_components"
