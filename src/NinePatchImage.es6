@@ -52,8 +52,8 @@ export default class NinePatchImage extends PIXI.DisplayObjectContainer {
 		}
 
 		/** Setting measures for this */
-		this.originalWidth  = ninePatchImages.width;
-		this.originalHeight = ninePatchImages.height;
+		this._width  = ninePatchImages.width;
+		this._height = ninePatchImages.height;
 	}
 
 	updateTransform() {
@@ -128,3 +128,26 @@ Phaser.Component.Core.install.call(NinePatchImage.prototype, [
 	'Overlap',
 	'Reset'
 ]);
+
+
+Object.defineProperty(NinePatchImage.prototype, 'width', {
+	get: function() {
+		return this._width;
+	},
+
+	set: function(value) {
+		this._width = value;
+		this.UpdateImageSizes();
+	}
+});
+
+Object.defineProperty(NinePatchImage.prototype, 'height', {
+	get: function() {
+		return this._height;
+	},
+
+	set: function(value) {
+		this._height = value;
+		this.UpdateImageSizes();
+	}
+});
