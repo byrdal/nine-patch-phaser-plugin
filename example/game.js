@@ -19,8 +19,8 @@ var game = new Phaser.Game(600, 400, Phaser.CANVAS, 'game', {
 			position.add(image, 'x').step(1);
 			position.add(image, 'y').step(1);
 		var measures = gui.addFolder('measures');
-			measures.add(image, 'targetWidth').step(1);
-			measures.add(image, 'targetHeight').step(1);
+			measures.add(image, 'width').step(1);
+			measures.add(image, 'height').step(1);
 		var anchor = gui.addFolder('anchor');
 			anchor.add(image.anchor, 'x').step(0.01);
 			anchor.add(image.anchor, 'y').step(0.01);
