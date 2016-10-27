@@ -7,6 +7,7 @@ var game = new Phaser.Game(600, 400, Phaser.CANVAS, 'game', {
 		game.cache.addNinePatch('blue_button02', 'blueSheet', 'blue_button02.png', 10, 10, 10, 10);
 		/** @type {Phaser.NinePatchImage} Create a NinePatchImage from cached textures */
 		var image = new Phaser.NinePatchImage(game, game.width/2, game.height/2, 'blue_button02');
+		game.add.existing(image);
 		/** Set the measures for image - [AUTOMATICALLY UPDATED] */
 			image.width  = 100;
 			image.height = 50;
