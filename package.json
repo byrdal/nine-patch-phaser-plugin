@@ -1,14 +1,11 @@
 {
   "name": "nine-patch-phaser-plugin",
-  "version": "1.0.0-filament8",
+  "version": "1.0.0",
   "description": "A Nine Patch Plugin for Phaser",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "gulp babel"
-  },
-  "publishConfig": {
-    "registry": "http://registry.filamentgames.com"
   },
   "keywords": [
     "phaser",
