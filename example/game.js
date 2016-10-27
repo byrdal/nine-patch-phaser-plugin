@@ -4,14 +4,14 @@ var game = new Phaser.Game(600, 400, Phaser.CANVAS, 'game', {
 	},
 	create: function create() {
 		/** Cache the patches' textures */
-		game.cache.addNinePatch('blue_button02', 'blueSheet', 'blue_button02.png', 10, 10, 10, 20);
+		game.cache.addNinePatch('blue_button02', 'blueSheet', 'blue_button02.png', 10, 10, 10, 10);
 		/** @type {Phaser.NinePatchImage} Create a NinePatchImage from cached textures */
 		var image = new Phaser.NinePatchImage(game, game.width/2, game.height/2, 'blue_button02');
 		/** Set the measures for image - [AUTOMATICALLY UPDATED] */
-			image.targetWidth  = 200;
-			image.targetHeight = 200;
+			image.width  = 100;
+			image.height = 50;
 		/** Set anchor for image - [NEEDS MANUAL UPDATE] */
-			image.anchor.setTo(0.5, 0.5);
+			image.anchor.set(0.5, 0.5);
 			image.UpdateImageSizes();
 		/** [NOT IMPORTANT] Dat.Gui Controller */
 		var gui = new dat.GUI();
